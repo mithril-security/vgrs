@@ -19,17 +19,19 @@ pub unsafe fn request(
     // Valgrind notices this magic instruction sequence and interprets
     // it as a kind of hypercall.  When not running under Valgrind,
     // the instructions do nothing and `default` is returned.
-    asm!("
-        roll $$3,  %edi
-        roll $$13, %edi
-        roll $$29, %edi
-        roll $$19, %edi
-        xchgl %ebx, %ebx"
+    asm!(
+        "rol edi, {_3}",
+        "rol edi, {_13}",
+        "rol edi, {_61}",
+        "rol edi, {_51}",
+        "xchg ebx, ebx",
 
-        : "={edx}"(result)
-        : "{eax}"(args.as_ptr()), "0"(default)
-        : "cc", "memory"
-        : "volatile");
-
+        _3 = const 3,
+        _13 = const 13,
+        _61 = const 61,
+        _51 = const 51,
+        in("eax") args.as_ptr(),
+        inout("edx") default => result,
+    );
     result
 }

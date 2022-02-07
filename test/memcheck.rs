@@ -35,7 +35,7 @@ unsafe fn do_test() {
     let mut errors = 0;
     assert_no_error(errors);
 
-    let x: u8 = mem::uninitialized();
+    let x: u8 = mem::MaybeUninit::uninit().assume_init();
     assert!(memcheck::check_is_addressable(&x).is_none());
     assert!(memcheck::check_is_defined(&x).is_some());
     black_box(x);
@@ -67,7 +67,7 @@ unsafe fn do_test() {
     black_box(x);
     assert_no_error(errors);
 
-    let x: u8 = mem::uninitialized();
+    let x: u8 = mem::MaybeUninit::uninit().assume_init();
     memcheck::make_defined(&x);
     assert!(memcheck::check_is_addressable(&x).is_none());
     assert!(memcheck::check_is_defined(&x).is_none());
@@ -81,7 +81,7 @@ unsafe fn do_test() {
 
     // Make the malloc'd pointer live to here, then leak it
     black_box(&x);
-    x = 0 as *mut c_void;
+    x = libc::malloc(0);
 
     assert_eq!(memcheck::count_leaks().leaked, 0);
     assert_eq!(memcheck::count_leak_blocks().leaked, 0);

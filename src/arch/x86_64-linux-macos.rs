@@ -19,17 +19,19 @@ pub unsafe fn request(
     // Valgrind notices this magic instruction sequence and interprets
     // it as a kind of hypercall.  When not running under Valgrind,
     // the instructions do nothing and `default` is returned.
-    asm!("
-        rolq $$3,  %rdi
-        rolq $$13, %rdi
-        rolq $$61, %rdi
-        rolq $$51, %rdi
-        xchgq %rbx, %rbx"
+    asm!(
+        "rol rdi, {_3}",
+        "rol rdi, {_13}",
+        "rol rdi, {_61}",
+        "rol rdi, {_51}",
+        "xchg rbx, rbx",
 
-        : "={rdx}"(result)
-        : "{rax}"(args.as_ptr()), "0"(default)
-        : "cc", "memory"
-        : "volatile");
-
+        _3 = const 3,
+        _13 = const 13,
+        _61 = const 61,
+        _51 = const 51,
+        in("rax") args.as_ptr(),
+        inout("rdx") default => result,
+    );
     result
 }
