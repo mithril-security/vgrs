@@ -20,8 +20,11 @@ fn main() {
 }
 ~~~
 
-For now this only works on Linux, FreeBSD or MacOS, and only on 32- or 64-bit
+For now this only works on Linux, FreeBSD or MacOS, and only 64-bit
 x86, but support for other platforms should be easy (see `src/arch/`).
+
+There previously was support for 32-bit x86. You can found the code
+in `arch/x86-linux-macos.rs` but it no longer works.
 
 There is [API documentation online][] although it's rather sparse.  You will
 probably want to look at the [Valgrind user manual][] and the C headers in

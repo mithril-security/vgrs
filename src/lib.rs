@@ -30,7 +30,9 @@
 
 #![crate_name="vgrs"]
 #![crate_type="lib"]
-#![feature(asm)]
+#![feature(cfg_version)]
+#![cfg_attr(not(version("1.59.0")), feature(asm))]
+#![cfg_attr(version("1.58.1"), feature(asm_const))]
 #![deny(warnings)]
 
 extern crate libc;
