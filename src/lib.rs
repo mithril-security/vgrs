@@ -50,7 +50,8 @@ use libc::c_uint;
 #[cfg(all(target_arch = "x86_64",
           any(target_os = "linux",
               target_os = "macos",
-              target_os = "freebsd")))]
+              target_os = "freebsd",
+              all(target_env = "sgx", target_vendor = "fortanix"))))]
 #[path = "arch/x86_64-linux-macos.rs"]
 mod arch;
 
